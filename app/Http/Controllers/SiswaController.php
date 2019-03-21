@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Siswa;
+use App\Kelas;
 
 class SiswaController extends Controller
 {
@@ -13,8 +15,10 @@ class SiswaController extends Controller
       'nis' => 'required|max:10',
       'nama_lengkap' => 'required|string',
       'jenis_kelamin' => 'required|max:1',
-      'alamat' => 'required|string'
+      'alamat' => 'required|string',
+      'id_kelas' => 'required'
     ]);
+
 
     if($validation->fails()){
       $errors = $validation->errors();
@@ -24,6 +28,17 @@ class SiswaController extends Controller
         'result' => null
       ];
     }
+
+    $checkIdKelas = Kelas::find($request->input('id_kelas'));
+
+    if(count($checkIdKelas) == 0){
+      return[
+        'status' => 'error',
+        'message' => 'ID Kelas not found.',
+        'result' => null
+      ];
+    }
+
 
     $result = \App\Siswa::create($request->all());
     if($result) {
@@ -44,6 +59,11 @@ class SiswaController extends Controller
   public function read(Request $request)
   {
     $result = \App\Siswa::all();
+
+    foreach ($result as $record) {
+      $record->kelas;
+    }
+
     return [
       'status' => 'success',
       'message' => '',
@@ -57,7 +77,8 @@ class SiswaController extends Controller
       'nis' => 'required|max:10',
       'nama_lengkap' => 'required|string',
       'jenis_kelamin' => 'required|max:1',
-      'alamat' => 'required|string'
+      'alamat' => 'required|string',
+      'id_kelas' => 'required'
     ]);
 
     if($validation->fails()){
@@ -94,7 +115,8 @@ class SiswaController extends Controller
     }
   }
 
-  public function delete(Request $request, $id){
+  public function delete(Request $request, $id)
+  {
     $siswa = \App\Siswa::find($id);
     if(empty($siswa)){
       return [
@@ -118,6 +140,34 @@ class SiswaController extends Controller
         'result' => null
       ];
     }
+  }
+
+  public function detail($id) {
+    $siswa = Siswa::find($id);
+
+    if(empty($siswa)) {
+      return [
+        'status' => 'error',
+        'message' => 'Data tidak ditemukan',
+        'result' => null
+      ];
+    }
+
+    return [
+      'status' => 'success',
+      'result' => $siswa
+    ];
+
+  }
+
+  public function count(){
+    $data['siswa'] = count(Siswa::all());
+    $data['kelas'] = count(Kelas::all());
+
+    return [
+      'status' => 'success',
+      'result' => $data
+    ];
   }
 
 }

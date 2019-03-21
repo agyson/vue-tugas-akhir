@@ -10,4 +10,8 @@ class Kelas extends Model
 
   protected $fillable = ['nama_kelas', 'jurusan'];
 
+  public function siswa(){
+    return $this->hasMany('App\Siswa');
+  }
+
 }

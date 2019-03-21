@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use App\Kelas;
+
 class KelasController extends Controller
 {
   public function create(Request $request)
@@ -88,6 +90,24 @@ class KelasController extends Controller
         'result' => null
       ];
     }
+  }
+
+  public function detail($id) {
+    $kelas = Kelas::find($id);
+
+    if(empty($kelas)) {
+      return [
+        'status' => 'error',
+        'message' => 'Data tidak ditemukan',
+        'result' => null
+      ];
+    }
+
+    return [
+      'status' => 'success',
+      'result' => $kelas
+    ];
+
   }
 
   public function delete(Request $request, $id){

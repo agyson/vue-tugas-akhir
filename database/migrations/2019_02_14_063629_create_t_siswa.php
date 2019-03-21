@@ -19,6 +19,7 @@ class CreateTSiswa extends Migration
             $table->string('nama_lengkap', 150);
             $table->string('jenis_kelamin', 1);
             $table->string('alamat', 150);
+            $table->integer('id_kelas');
             $table->timestamps();
         });
     }
